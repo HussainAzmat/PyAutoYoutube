@@ -3,6 +3,7 @@ import utils.upload_util as up
 import utils.title_util as tt
 import utils.discord_util as dc
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from time import sleep
 import os
 
@@ -10,16 +11,17 @@ def discord_msg(status,link):
         e = dc.discord.Embed(title="Upload Status", description=status)
         e.add_field(name="Title", value=title)
         e.add_field(name="Link", value=link)
-        e.add_field(name="Time", value=str(datetime.now()))
+        e.add_field(name="Time", value=str(datetime.now(ZoneInfo("Asia/Kolkata")).strftime("%Y-%m-%d %H:%M")))
         dc.webhook.send(embed=e, username='AutoYoutube')
 
 #----------- Main Loop -----------
 
 while True:
         file_path = os.listdir('clips') # puts the name of the clips in a list
-        if len(file_path) == 0:         # checks if the directory is empty
+        if len(file_path) == 0:         # checks if the directory is empty and sleeps for 10 mins before next check!
                 print('No files')
-                break
+                sleep(600)
+                continue
 
         file = 'clips/'+file_path[0]
         title = tt.title_selector()   # generates a random title
